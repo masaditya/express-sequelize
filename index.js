@@ -10,7 +10,7 @@ app.use(cors());
 // include router /admin
 app.use("/v1/pegawai", require("./routes/pegawaiRoutes"));
 
-app.get('/client', (req, res) => {
+app.get('/', (req, res) => {
     res.sendFile('index.html', {
         root: path.join(__dirname, './')
     })
