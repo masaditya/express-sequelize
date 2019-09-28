@@ -1,16 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Document</title>
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-      crossorigin="anonymous"
-    />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
   </head>
 
   <body>
@@ -22,38 +19,48 @@
       <div class="p-5 border border-primary" id="pegawai"></div>
     </div>
 
-    <script
-      src="https://code.jquery.com/jquery-3.4.1.js"
-      integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
-      crossorigin="anonymous"
-    ></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"
+      integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
     <script>
       let url, success;
       var data = {};
+      let ids;
 
-      $(document).ready(function() {
+      $(document).ready(function () {
         $.ajax({
           type: "GET",
           url: "http://localhost:3000/v1/pegawai/",
           data: data,
-          success: function(data) {
+          success: function (data) {
             console.log(data);
             data.forEach(pegawai => {
               $("#pegawai").append(
-                "<li class='list-group-item'> " +
-                  pegawai.nama_pegawai +
-                  " <button id=" +
-                  "delete" +
-                  " dataid=" +
-                  pegawai.id_pegawai +
-                  " class='float-right mx-4'> delete </button> <button class='float-right'> update </button> </li>"
+                "<li class='list-group-item'> <b> " +
+                pegawai.nama_pegawai + "</b>  <small> " + pegawai.alamat + " </small> " +
+                "  <button id=" +
+                "delete" +
+                " dataid=" +
+                pegawai.id_pegawai +
+                " class='float-right mx-4 delete'> delete </button>" +
+                "<button class='float-right'> update </button> </li>"
               );
             });
+
+            
+            // detele 
+            this.ids = document.querySelectorAll(".delete");
+
+            for (const button of this.ids) {
+              button.addEventListener('click', function (event) {
+                let id = button.getAttribute("dataid")
+                deletedata(id)
+              })
+            }
           }
         });
       });
 
-      $("#add").click(function() {
+      $("#add").click(function () {
         data.nama_pegawai = $("#nama").val();
         data.alamat = $("#alamat").val();
         data = JSON.stringify(data);
@@ -64,14 +71,33 @@
           data: data,
           contentType: "application/json",
           dataType: "json",
-          success: function(data) {
+          success: function (data) {
             console.log(data);
+            location.reload();
           },
-          failure: function(errMsg) {
+          failure: function (errMsg) {
             console.log(errMsg);
           }
         });
       });
+
+      function deletedata(id) {
+        $.ajax({
+          type: "DELETE",
+          url: "http://localhost:3000/v1/pegawai/" + id,
+          data: data,
+          contentType: "application/json",
+          dataType: "json",
+          success: function (data) {
+            console.log(data);
+            location.reload();
+          },
+          failure: function (errMsg) {
+            console.log(errMsg);
+          }
+        });
+      }
     </script>
   </body>
+
 </html>
