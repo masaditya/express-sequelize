@@ -15,6 +15,10 @@
       <input type="text" name="nama" id="nama" />
       <input type="text" name="alamat" id="alamat" />
       <button id="add">tambah</button>
+      <button id="update">update
+
+      </button>
+
 
       <div class="p-5 border border-primary" id="pegawai"></div>
     </div>
@@ -23,39 +27,60 @@
       integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
     <script>
       let url, success;
+      let arrays = []
       var data = {};
-      let ids;
+      let deletes;
+      let updates;
 
       $(document).ready(function () {
+        $('#update').hide()
         $.ajax({
           type: "GET",
           url: "http://localhost:3000/v1/pegawai/",
           data: data,
-          success: function (data) {
-            console.log(data);
-            data.forEach(pegawai => {
+          success: function (datas) {
+            arrays = datas;
+            console.log(datas);
+            datas.forEach((pegawai, i) => {
               $("#pegawai").append(
-                "<li class='list-group-item'> <b> " +
+                "<li id=" +
+                i +
+                " class='list-group-item update'> <b> " +
                 pegawai.nama_pegawai + "</b>  <small> " + pegawai.alamat + " </small> " +
                 "  <button id=" +
                 "delete" +
                 " dataid=" +
                 pegawai.id_pegawai +
-                " class='float-right mx-4 delete'> delete </button>" +
-                "<button class='float-right'> update </button> </li>"
+                " class='float-right mx-4 delete'> delete </button>"
               );
             });
 
-            
-            // detele 
-            this.ids = document.querySelectorAll(".delete");
 
-            for (const button of this.ids) {
+            // detele 
+            this.deletes = document.querySelectorAll(".delete");
+
+            for (const button of this.deletes) {
               button.addEventListener('click', function (event) {
                 let id = button.getAttribute("dataid")
                 deletedata(id)
               })
             }
+
+            this.updates = document.querySelectorAll(".update");
+            for (const list of this.updates) {
+              list.addEventListener('click', function (event) {
+                let index = $(list).attr("id");
+                data = arrays[index];
+                console.log(data);
+                $("#nama").val(data.nama_pegawai);
+                $("#alamat").val(data.alamat);
+                $('#update').show()
+                $('#add').hide()
+
+              })
+            }
+
+
           }
         });
       });
@@ -97,6 +122,27 @@
           }
         });
       }
+
+
+
+      $('#update').click(function () {
+        data.nama_pegawai = $("#nama").val();
+        data.alamat = $("#alamat").val();
+        $.ajax({
+          type: "PUT",
+          url: "http://localhost:3000/v1/pegawai/" + data.id_pegawai,
+          data: data,
+          contentType: "application/json",
+          dataType: "json",
+          success: function (data) {
+            console.log(data);
+            location.reload();
+          },
+          failure: function (errMsg) {
+            console.log(errMsg);
+          }
+        });
+      })
     </script>
   </body>
 
