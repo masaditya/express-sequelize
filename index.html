@@ -71,7 +71,7 @@
               list.addEventListener('click', function (event) {
                 let index = $(list).attr("id");
                 data = arrays[index];
-                console.log(data);
+                // console.log(data);
                 $("#nama").val(data.nama_pegawai);
                 $("#alamat").val(data.alamat);
                 $('#update').show()
@@ -128,6 +128,9 @@
       $('#update').click(function () {
         data.nama_pegawai = $("#nama").val();
         data.alamat = $("#alamat").val();
+        data = JSON.stringify(data);
+        console.log(data);
+
         $.ajax({
           type: "PUT",
           url: "http://localhost:3000/v1/pegawai/" + data.id_pegawai,

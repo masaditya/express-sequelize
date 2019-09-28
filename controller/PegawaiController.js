@@ -34,6 +34,7 @@ module.exports = {
 
   update: function (req, res) {
     Pegawai.findByPk(req.params.id).then(function (row) {
+      // console.log(req.body);
       row.update(req.body);
       res.json(row);
     });
